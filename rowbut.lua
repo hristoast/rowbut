@@ -1,4 +1,4 @@
---[[ rowbut - by johnnyhostile
+--[[ rowbut
 
 http://pastebin.com/NgbbQg5i
 
@@ -81,7 +81,8 @@ function check_surroundings()
 end
 
 function come_back()
-  -- print('coming back')
+  --[[ Only for testing, man ]]
+  -- print('COOOOOOOOME BAAACK... little, RAAAYVUUUN')
   while BACK_COUNT < MOVE_LIMIT do
     if not turtle.detectUp() then
       turtle.select(COBBLE_SLOT)
@@ -99,7 +100,7 @@ end
 
 function dig_two_by_one()
   --[[ Makes the bot dig a 2x1 'tunnel' in front of it, of blocks are there FIXME ]]
-  if turtle.detect() then
+  while turtle.detect() do
     turtle.dig()
   end
   turtle.forward()
@@ -192,16 +193,12 @@ function prepare_for_and_place_chest()
 
   -- print('emptying items into the chest ...')
   for slot=1, 16, 1 do
-    if slot > 3 then
+    if slot > 4 then
       turtle.select(slot)
-      if turtle.compareTo(COBBLE_SLOT) then
-        -- print('dropping some cobble')
-        turtle.drop(turtle.getItemCount(slot))
-      end
+      turtle.drop(turtle.getItemCount(slot))
     end
   end
   turtle.turnLeft()  -- bot is now back in mining position
-  -- TODO: empty items into chest!
   -- print('done placing chest, back to mining!')
 end
 
@@ -226,7 +223,11 @@ function prepare_for_and_place_torch()
   -- print('placing torch!')
   turtle.select(TORCH_SLOT)
   turtle.placeUp()
-  turtle.turnLeft()
+  if chest_cycle then
+    turtle.turnRight()
+  else
+    turtle.turnLeft()
+  end
   -- print('done placing torch, back to mining!')
 end
 
@@ -249,12 +250,13 @@ function scan_inventory()
 end
 
 function turn_the_tunnel_left()
-  --[[ Once we are done with our strip, turn it right to begin mining back. ]]
+  --[[ Once we are done with our strip, turn it left and begin mining back. ]]
   TUNNEL_RIGHT = false
 
   NEXT = 0
   turtle.turnLeft()
   while NEXT < 3 do
+    -- TODO: on the 2nd turn, place a torch
     NEXT = NEXT + 1
     -- print('NEXT L: ', NEXT)
     dig_two_by_one()
@@ -265,12 +267,13 @@ function turn_the_tunnel_left()
 end
 
 function turn_the_tunnel_right()
-  --[[ Once we are done with our strip, turn it right to begin mining back. ]]
+  --[[ Once we are done with our strip, turn it right and begin mining back. ]]
   TUNNEL_RIGHT = true
 
   NEXT = 0
   turtle.turnRight()
   while NEXT < 3 do
+    -- TODO: on the 2nd turn, place a torch
     NEXT = NEXT + 1
     -- print('NEXT R: ', NEXT)
     dig_two_by_one()
@@ -281,16 +284,19 @@ function turn_the_tunnel_right()
 end
 
 function mining_while()
+  --[[ The main while loop that runs while strip mining ]]
   while MOVE_COUNT < MOVE_LIMIT do
     chest_cycle = false
     torch_cycle = false
 
     MOVE_COUNT = MOVE_COUNT + 1
     print('MOVE_COUNT: ', MOVE_COUNT)
+    print("fuel:", turtle.getFuelLevel())
 
+    -- TODO: is there a way to keep track of how many blocks we've collected?
     if not scan_inventory() then
       chest_cycle = true
-      print('chest cycle')
+      -- print('chest cycle')
       prepare_for_and_place_chest()
     end
 
@@ -307,6 +313,7 @@ function mining_while()
     check_surroundings()
   end
 
+  -- TODO: make a minimalist version of check_surroundings() that doesn't place blocks for this part (maybe?)
   if not TUNNEL_RIGHT then
     turn_the_tunnel_right()
     MOVE_COUNT = 0
@@ -322,11 +329,8 @@ function main()
   --[[ Main program loop ]]
   while turtle.getFuelLevel() > 1 do
     mining_while()
+    print('RESTARTING!')
   end
-
-  -- come_back()
-  print("fuel:", turtle.getFuelLevel())
 end
-
 
 main()
