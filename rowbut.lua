@@ -81,8 +81,7 @@ function check_surroundings()
 end
 
 function come_back()
-  --[[ Only for testing, man ]]
-  -- print('COOOOOOOOME BAAACK... little, RAAAYVUUUN')
+  -- COOOOOOOOME BAAACK... little, RAAAYVUUUN
   while BACK_COUNT < MOVE_LIMIT do
     if not turtle.detectUp() then
       turtle.select(COBBLE_SLOT)
@@ -99,7 +98,7 @@ function come_back()
 end
 
 function dig_two_by_one()
-  --[[ Makes the bot dig a 2x1 'tunnel' in front of it, of blocks are there FIXME ]]
+  --[[ Makes the bot dig a 2x1 'tunnel' in front of it ]]
   while turtle.detect() do
     turtle.dig()
   end
@@ -112,61 +111,50 @@ end
 function prepare_chest_hole_walls_bottom()
   --[[ verify the presence of 8 blocks; below, behind, to the left and right of the chest, as
   well as the same blocks one above the chest (idk if this is worded well or not..) ]]
-  -- print('START bottom check chest surround area')
   if not turtle.detectDown() then
-    -- print('placing block for below chest')
     turtle.select(COBBLE_SLOT)
     turtle.placeDown()
   end
   if not turtle.detect() then
-    -- print('placing block for behind chest')
     turtle.select(COBBLE_SLOT)
     turtle.place()
   end
   turtle.turnRight()
   if not turtle.detect() then
-    -- print('placing block to the right of the chest')
     turtle.select(COBBLE_SLOT)
     turtle.place()
   end
   turtle.turnLeft()
   turtle.turnLeft()
   if not turtle.detect() then
-    -- print('placing block to the left of the chest')
     turtle.select(COBBLE_SLOT)
     turtle.place()
   end
-  -- print('END bottom lower check chest surround area')
 end
 
 function prepare_chest_hole_walls_top()
   --[[ verify the presence of 8 blocks; below, behind, to the left and right of the chest, as
-  well as the same blocks one above the chest (idk if this is worded well or not..) ]]
-  -- print('START top check chest surround area')
+  well as the same blocks one above the chest (idk if this is worded well or not..). Seperate version for the upper level as we are
+  checking the top block rather than the one below us ]]
   if not turtle.detectUp() then
-    -- print('placing block for above chest')
     turtle.select(COBBLE_SLOT)
     turtle.placeUp()
   end
   if not turtle.detect() then
-    -- print('placing block for behind chest')
     turtle.select(COBBLE_SLOT)
     turtle.place()
   end
   turtle.turnRight()
   if not turtle.detect() then
-    -- print('placing block to the right of the chest')
     turtle.select(COBBLE_SLOT)
     turtle.place()
   end
   turtle.turnLeft()
   turtle.turnLeft()
   if not turtle.detect() then
-    -- print('placing block to the left of the chest')
     turtle.select(COBBLE_SLOT)
     turtle.place()
   end
-  -- print('END top lower check chest surround area')
 end
 
 function prepare_for_and_place_chest()
@@ -177,12 +165,10 @@ function prepare_for_and_place_chest()
   turtle.turnRight()
   dig_two_by_one()
 
-  -- print("begin filling in the surrounding walls so the chest doesn't get destroyed or something")
   prepare_chest_hole_walls_bottom()
   turtle.turnRight()  -- now perpendicular to the tunnel
   turtle.up()
   prepare_chest_hole_walls_top()
-  -- print('walls for chest should be in place')
 
   turtle.turnRight()
   turtle.down()
@@ -191,7 +177,6 @@ function prepare_for_and_place_chest()
   turtle.select(CHEST_SLOT)
   turtle.place()
 
-  -- print('emptying items into the chest ...')
   for slot=1, 16, 1 do
     if slot > 4 then
       turtle.select(slot)
@@ -199,7 +184,6 @@ function prepare_for_and_place_chest()
     end
   end
   turtle.turnLeft()  -- bot is now back in mining position
-  -- print('done placing chest, back to mining!')
 end
 
 function prepare_for_and_place_torch()
@@ -220,7 +204,6 @@ function prepare_for_and_place_torch()
   end
   turtle.down()
 
-  -- print('placing torch!')
   turtle.select(TORCH_SLOT)
   turtle.placeUp()
   if chest_cycle then
@@ -228,7 +211,6 @@ function prepare_for_and_place_torch()
   else
     turtle.turnLeft()
   end
-  -- print('done placing torch, back to mining!')
 end
 
 function scan_inventory()
@@ -258,11 +240,9 @@ function turn_the_tunnel_left()
   while NEXT < 3 do
     -- TODO: on the 2nd turn, place a torch
     NEXT = NEXT + 1
-    -- print('NEXT L: ', NEXT)
     dig_two_by_one()
     check_surroundings()
   end
-  -- print('turn left here?')
   turtle.turnLeft()
 end
 
@@ -275,11 +255,9 @@ function turn_the_tunnel_right()
   while NEXT < 3 do
     -- TODO: on the 2nd turn, place a torch
     NEXT = NEXT + 1
-    -- print('NEXT R: ', NEXT)
     dig_two_by_one()
     check_surroundings()
   end
-  -- print('turn right here?')
   turtle.turnRight()
 end
 
@@ -296,18 +274,14 @@ function mining_while()
     -- TODO: is there a way to keep track of how many blocks we've collected?
     if not scan_inventory() then
       chest_cycle = true
-      -- print('chest cycle')
       prepare_for_and_place_chest()
     end
 
     if MOVE_COUNT % TORCH_INTERVAL == 0 then
       torch_cycle = true
-      -- print('torch cycle')
       prepare_for_and_place_torch()
     end
-    -- print('torch_cycle: ', torch_cycle)
 
-    -- print('digging + walking cycle')
     dig_two_by_one()
 
     check_surroundings()
@@ -317,11 +291,9 @@ function mining_while()
   if not TUNNEL_RIGHT then
     turn_the_tunnel_right()
     MOVE_COUNT = 0
-    -- mining_while()
   else
     turn_the_tunnel_left()
     MOVE_COUNT = 0
-    -- mining_while()
   end
 end
 
