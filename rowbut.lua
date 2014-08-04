@@ -293,9 +293,6 @@ function turn_the_tunnel_right()
   NEXT = 0
   turtle.turnRight()
   while NEXT < 3 do
-    if NEXT == 2 then -- on the 2nd turn, place a torch
-      prepare_for_and_place_torch()
-    end
     NEXT = NEXT + 1
     turtle.select(COBBLE_SLOT)  -- so cobble that gets picked up is put into the right slot
     dig_two_by_one()
