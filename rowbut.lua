@@ -231,7 +231,7 @@ function prepare_for_and_place_torch()
     shell.exit(0)
   end
   turtle.select(CURRENT_TORCH_SLOT)
-  if turtle.getItemCount(slot) == 0 then -- bail if the selected torch slot is empty
+  if turtle.getItemCount(CURRENT_TORCH_SLOT) == 0 then -- bail if the selected torch slot is empty
     print('oh noes! out of torches!')
     shell.exit(0)
   end
