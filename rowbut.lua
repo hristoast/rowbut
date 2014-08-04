@@ -31,7 +31,6 @@ Come back in a few hours and you will find several hundred-block long strips dot
 ---
 
  * Some sort of refueling functionality
- * Tweak corner turning logic to allow for placing a torch
  * Add the ability to change initial turn direction (presently hardcoded to right)
  * Add the option to disable "paranoid mode" (checking every surrounding block, every turn)
  * Make my code more idomatic (where applicable)
